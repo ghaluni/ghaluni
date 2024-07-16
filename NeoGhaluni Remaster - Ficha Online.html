@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoGhaluni RPG</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e1e;
+            color: #c7c7c7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #2e2e2e;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            cursor: pointer;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .tab {
+            flex: 1 1 33%;
+            padding: 10px;
+            text-align: center;
+            background-color: #3e3e3e;
+            border-bottom: 3px solid transparent;
+            transition: background-color 0.3s, border-bottom 0.3s;
+        }
+        .tab:hover {
+            background-color: #4e4e4e;
+        }
+        .tab.active {
+            background-color: #4e4e4e;
+            border-bottom: 3px solid #007bff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .field {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .field-inline {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .field-inline .field {
+            width: 48%;
+        }
+        .field-inline-3 {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .field-inline-3 .field {
+            width: 100px;
+        }
+        .field-inline-2 {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .field-inline-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #c7c7c7;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #555;
+            border-radius: 3px;
+            background-color: #1e1e1e;
+            color: #c7c7c7;
+            text-align: center;
+        }
+        textarea {
+            text-align: left;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 3px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px; /* Increase the space above the buttons */
+        }
+        .button-group button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .group {
+            margin-bottom: 20px;
+            border-top: 1px solid #555;
+            padding-top: 20px;
+        }
+        .group label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            text-align: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #007bff;
+        }
+        .checkbox-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .checkbox-container input {
+            width: 25px;
+            height: 25px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: 2px solid #007bff;
+            border-radius: 3px;
+            background-color: #2e2e2e;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .checkbox-container input:checked {
+            background-color: #007bff;
+        }
+        .small-input {
+            width: 100px;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #555;
+            border-radius: 3px;
+            background-color: #1e1e1e;
+            color: #c7c7c7;
+            text-align: center;
+        }
+        .flex-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .field-name {
+            flex-grow: 2;
+        }
+        .field-level {
+            flex-grow: 1;
+            max-width: 100px;
+        }
+        .highlight {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: left;
+        }
+        .result span {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .npc-title {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 16px; /* Adjusted for better visual balance */
+        }
+        .npc-result {
+            font-size: 16px; /* Adjusted for better visual balance */
+        }
+        .dice-button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px; /* Increase space between button rows */
+        }
+        .attribute-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .attribute-group input[type="number"],
+        .attribute-group .checkbox-container {
+            margin-left: 20px; /* Adjust the margin to move elements to the right */
+        }
+        table {
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>NeoGhaluni RPG</h1>
+        </div>
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('basic')">Informações</div>
+            <div class="tab" onclick="showTab('attributes')">Atributos</div>
+            <div class="tab" onclick="showTab('adventuring')">Aventurando</div>
+            <div class="tab" onclick="showTab('notes')">Anotações</div>
+            <div class="tab" onclick="showTab('conjuration')">Conjuração</div>
+            <div class="tab" onclick="showTab('dice')">Dados</div>
+            <div class="tab" onclick="showTab('npc')">NPCs</div>
+            <div class="tab" onclick="showTab('configuration')">Configuração</div>
+        </div>
+        <div id="basic" class="tab-content active">
+            <div class="field">
+                <label for="nome-personagem">Nome do Personagem</label>
+                <input type="text" id="nome-personagem">
+            </div>
+            <div class="field-inline-center">
+    <button type="button" onclick="alterarNivel(-1)">-</button>
+    <div class="field">
+        <label for="nivel">Nível</label>
+        <input type="number" id="nivel" class="small-input" value="1" readonly>
+    </div>
+    <button type="button" onclick="alterarNivel(1)">+</button>
+</div>
+            <div class="field">
+                <label for="xp">XP</label>
+                <div class="checkbox-container" id="xp-container">
+                    <div>
+                        <input type="checkbox" id="xp1">
+                        <input type="checkbox" id="xp2">
+                        <input type="checkbox" id="xp3">
+                        <input type="checkbox" id="xp4">
+                        <input type="checkbox" id="xp5">
+                    </div>
+                    <div>
+                        <input type="checkbox" id="xp6">
+                        <input type="checkbox" id="xp7">
+                        <input type="checkbox" id="xp8">
+                        <input type="checkbox" id="xp9">
+                        <input type="checkbox" id="xp10">
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label for="raca">Raça</label>
+                <select id="raca">
+                    <option value="Anão">Anão</option>
+                    <option value="Askoni">Askoni</option>
+                    <option value="Doppelganger">Doppelganger</option>
+                    <option value="Draconiano">Draconiano</option>
+                    <option value="Elfo de Alfel">Elfo de Alfel</option>
+                    <option value="Elfo de Taru">Elfo de Taru</option>
+                    <option value="Ghalgar">Ghalgar</option>
+                    <option value="Gnomo">Gnomo</option>
+                    <option value="Goblin">Goblin</option>
+                    <option value="Halfling">Halfling</option>
+                    <option value="Humano de Alfel">Humano de Alfel</option>
+                    <option value="Humano de Taru">Humano de Taru</option>
+                    <option value="Loxodonte">Loxodonte</option>
+                    <option value="Zoonino Puro-Sangue">Zoonino Puro-Sangue</option>
+                    <option value="Zoonino Mestiço">Zoonino Mestiço</option>
+                    <option value="Nyata">Nyata</option>
+                    <option value="Orc">Orc</option>
+                    <option value="Robô">Robô</option>
+                    <option value="Taurino">Taurino</option>
+                    <option value="Teshi">Teshi</option>
+                    <option value="Títere">Títere</option>
+                    <option value="Troll">Troll</option>
+                    <option value="outraRaça">Outra Raça</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="classeBase">Classe Base</label>
+                <select id="classeBase">
+                    <option value="atirador">Atirador</option>
+                    <option value="barbaro">Bárbaro</option>
+                    <option value="bardo">Bardo</option>
+                    <option value="cacador">Caçador</option>
+                    <option value="clerigo">Clérigo</option>
+                    <option value="druida">Druida</option>
+                    <option value="feiticeiro">Feiticeiro</option>
+                    <option value="guerreiro">Guerreiro</option>
+                    <option value="ladino">Ladino</option>
+                    <option value="lutador">Lutador</option>
+                    <option value="mago">Mago</option>
+                    <option value="monge">Monge</option>
+                    <option value="paladino">Paladino</option>
+                    <option value="samurai">Samurai</option>
+                    <option value="outraclasse">Outra Classe</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="classeIntermediaria">Classe Intermediária</label>
+                <select id="classeIntermediaria">
+                    <option value="nenhuma">Nenhuma</option>
+                    <option value="adeptoElemental">Adepto Elemental</option>
+                    <option value="alquimista">Alquimista</option>
+                    <option value="arcanista">Arcanista</option>
+                    <option value="batedor">Batedor</option>
+                    <option value="defensor">Defensor</option>
+                    <option value="furioso">Furioso</option>
+                    <option value="geomancer">Geomancer</option>
+                    <option value="guardião">Guardião</option>
+                    <option value="invocador">Invocador</option>
+                    <option value="manifestadorDoAmago">Manifestador do Âmago</option>
+                    <option value="marcial">Marcial</option>
+                    <option value="menestrel">Menestrel</option>
+                    <option value="ninja">Ninja</option>
+                    <option value="soldado">Soldado</option>
+                    <option value="trapaceiro">Trapaceiro</option>
+                    <option value="outraclasse">Outra Classe</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="sobreclasse">SobreClasse</label>
+                <select id="sobreclasse">
+                    <option value="nenhuma">Nenhuma</option>
+                    <option value="Aedo">Aedo</option>
+                    <option value="Arauto">Arauto</option>
+                    <option value="Arquimago">Arquimago</option>
+                    <option value="Assassino">Assassino</option>
+                    <option value="Berserker">Berserker</option>
+                    <option value="Evocador">Evocador</option>
+                    <option value="Mestre Combativo">Mestre Combativo</option>
+                    <option value="Mestre da Guerra">Mestre da Guerra</option>
+                    <option value="Mestre Domador">Mestre Domador</option>
+                    <option value="Necromante">Necromante</option>
+                    <option value="Senhor Selvagem">Senhor Selvagem</option>
+                    <option value="Sniper">Sniper</option>
+                    <option value="Sumo Sacerdote">Sumo Sacerdote</option>
+                    <option value="Tecnopata">Tecnopata</option>
+                    <option value="Xogum">Xogum</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="divindade">Divindade</label>
+                <select id="divindade">
+                    <option value="nenhuma">Nenhuma</option>
+                    <option value="edenLaui">Éden Laúi</option>
+                    <option value="fleiusGoelt">Fleius goelt</option>
+                    <option value="kazumeNayan">Kazume Nayan</option>
+                    <option value="kimaraPhreiya">Kimara Phreiya</option>
+                    <option value="liceniaVankNyon">Licênia Vank Nyon</option>
+                    <option value="ludawAukih">Ludaw Aukih</option>
+                    <option value="magrocLocke">Magroc Locke</option>
+                    <option value="mepharestusLoxor">Mepharestus Loxor</option>
+                    <option value="namaZankern">Namã Zankern</option>
+                    <option value="unzeroKraken">Un’zero Kraken</option>
+                    <option value="wadulAukih">Wadul Aukih</option>
+                    <option value="zenemosAker">Zenemos Aker</option>
+                    <option value="outradivindade">Outra Divindade</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="bondade">Bondade</label>
+                <div class="checkbox-container" id="bondade-container">
+                    <input type="checkbox" id="bondade1">
+                    <input type="checkbox" id="bondade2">
+                    <input type="checkbox" id="bondade3">
+                    <input type="checkbox" id="bondade4">
+                    <input type="checkbox" id="bondade5">
+                </div>
+            </div>
+            <div class="field">
+                <label for="disciplina">Disciplina</label>
+                <div class="checkbox-container" id="disciplina-container">
+                    <input type="checkbox" id="disciplina1">
+                    <input type="checkbox" id="disciplina2">
+                    <input type="checkbox" id="disciplina3">
+                    <input type="checkbox" id="disciplina4">
+                    <input type="checkbox" id="disciplina5">
+                </div>
+            </div>
+            <div class="field">
+                <label for="ousadia">Ousadia</label>
+                <div class="checkbox-container" id="ousadia-container">
+                    <input type="checkbox" id="ousadia1">
+                    <input type="checkbox" id="ousadia2">
+                    <input type="checkbox" id="ousadia3">
+                    <input type="checkbox" id="ousadia4">
+                    <input type="checkbox" id="ousadia5">
+                </div>
+            </div>
+            <div class="field">
+                <label for="oficio">Ofícios</label>
+                <div id="oficio-container">
+                    <!-- Ofícios serão adicionadas aqui -->
+                </div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarOficio()">Adicionar</button>
+                    <button type="button" onclick="removerUltimoOficio()">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="noroi">Noroi</label>
+                <input type="text" id="noroi">
+            </div>
+            <div class="field">
+                <label for="kiroi">Kiroi</label>
+                <input type="text" id="kiroi">
+            </div>
+            <div class="field">
+                <label for="recurso">Recurso</label>
+                <input type="text" id="recurso">
+            </div>
+            <div class="field">
+                <label for="opiniao">Opiniões</label>
+                <div id="opinioes-container">
+                    <!-- Opiniões serão adicionadas aqui -->
+                </div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarOpiniao()">Adicionar</button>
+                    <button type="button" onclick="removerUltimaOpiniao()">Remover</button>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" onclick="limparPersonagem()" style="background-color: #dc3545;">Limpar</button>
+                <button type="button" onclick="salvarPersonagem()" style="background-color: #28a745;">Salvar</button>
+                <button type="button" onclick="carregarPersonagem()" style="background-color: #ff7f50;">Carregar</button>
+            </div>
+        </div>
+        <div id="attributes" class="tab-content">
+            <div class="group">
+                <div class="field">
+                    <label for="fisico" class="highlight">Físico</label>
+                    <div class="attribute-group">
+                        <input type="number" id="fisico" class="small-input">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="fisico-pericia-chave">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="atletismo">Atletismo</label>
+                    <input type="text" id="atletismo">
+                </div>
+                <div class="field">
+                    <label for="defesa">Defesa</label>
+                    <input type="text" id="defesa">
+                </div>
+                <div class="field">
+                    <label for="furtividade">Furtividade</label>
+                    <input type="text" id="furtividade">
+                </div>
+                <div class="field">
+                    <label for="manejar">Manejar</label>
+                    <input type="text" id="manejar">
+                </div>
+                <div class="field">
+                    <label for="pontaria">Pontaria</label>
+                    <input type="text" id="pontaria">
+                </div>
+            </div>
+            <div class="group">
+                <div class="field">
+                    <label for="intelecto" class="highlight">Intelecto</label>
+                    <div class="attribute-group">
+                        <input type="number" id="intelecto" class="small-input">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="intelecto-pericia-chave">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="artimanha">Artimanha</label>
+                    <input type="text" id="artimanha">
+                </div>
+                <div class="field">
+                    <label for="conhecimento">Conhecimento</label>
+                    <input type="text" id="conhecimento">
+                </div>
+                <div class="field">
+                    <label for="oficio-intelecto">Ofício</label>
+                    <input type="text" id="oficio-intelecto">
+                </div>
+                <div class="field">
+                    <label for="persuasao">Persuasão</label>
+                    <input type="text" id="persuasao">
+                </div>
+                <div class="field">
+                    <label for="poderArcano">Poder Arcano</label>
+                    <input type="text" id="poderArcano">
+                </div>
+            </div>
+            <div class="group">
+                <div class="field">
+                    <label for="consciencia" class="highlight">Consciência</label>
+                    <div class="attribute-group">
+                        <input type="number" id="consciencia" class="small-input">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="consciencia-pericia-chave">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="empatia">Empatia</label>
+                    <input type="text" id="empatia">
+                </div>
+                <div class="field">
+                    <label for="enfermagem">Enfermagem</label>
+                    <input type="text" id="enfermagem">
+                </div>
+                <div class="field">
+                    <label for="percepcao">Percepção</label>
+                    <input type="text" id="percepcao">
+                </div>
+                <div class="field">
+                    <label for="poderDivino">Poder Divino</label>
+                    <input type="text" id="poderDivino">
+                </div>
+                <div class="field">
+                    <label for="vontade">Vontade</label>
+                    <input type="text" id="vontade">
+                </div>
+            </div>
+            <div class="group">
+                <div class="field">
+                    <div class="field">
+                        <label for="limite-ab">Limite de AB</label>
+                        <input type="text" id="limite-ab">
+                    </div>
+                    <div class="field-inline-center">
+    <button type="button" class="level-button" onclick="alterarAB(-1)">-</button>
+    <div class="field">
+        <label for="ab">AB</label>
+        <input type="number" id="ab" class="small-input" value="0" readonly>
+    </div>
+    <button type="button" class="level-button" onclick="alterarAB(1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="adventuring" class="tab-content">
+            <div class="field">
+                <label for="habilidades">Habilidades</label>
+                <div id="habilidades-container">
+                    <!-- Habilidades serão adicionadas aqui -->
+                </div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarHabilidade()">Adicionar</button>
+                    <button type="button" onclick="removerUltimaHabilidade()">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="item">Item</label>
+                <div id="item-container">
+                    <!-- Itens serão adicionadas aqui -->
+                </div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarItem()">Adicionar</button>
+                    <button type="button" onclick="removerUltimoItem()">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="habilidade-regional">Habilidade Regional</label>
+                <input type="text" id="habilidade-regional">
+            </div>
+            <div class="group">
+                <label>Carteira de Mercenário</label>
+                <div class="field">
+                    <label for="grau-mercenario">Grau de Mercenário</label>
+                    <select id="grau-mercenario" onchange="calcularCreditoMercenario()">
+                        <option value="1">Ferro</option>
+                        <option value="2">Bronze</option>
+                        <option value="3">Prata</option>
+                        <option value="4">Ouro</option>
+                        <option value="5">Platina</option>
+                        <option value="6">Diamante</option>
+                        <option value="7">Místico</option>
+                        <option value="8">Cosmo</option>
+                        <option value="9">Lenda</option>
+                    </select>
+                </div>
+                <div class="field-inline-2">
+                    <div class="field">
+                        <label for="medalhas-positivas">Medalhas positivas</label>
+                        <div class="checkbox-container" id="medalhas-positivas-container">
+                            <input type="checkbox" id="medalhas-positivas1">
+                            <input type="checkbox" id="medalhas-positivas2">
+                            <input type="checkbox" id="medalhas-positivas3">
+                            <input type="checkbox" id="medalhas-positivas4">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="medalhas-negativas">Medalhas negativas</label>
+                        <div class="checkbox-container" id="medalhas-negativas-container">
+                            <input type="checkbox" id="medalhas-negativas1">
+                            <input type="checkbox" id="medalhas-negativas2">
+                            <input type="checkbox" id="medalhas-negativas3">
+                            <input type="checkbox" id="medalhas-negativas4">
+                        </div>
+                    </div>
+                </div>
+                <div class="field-inline-3">
+                    <div class="field">
+                        <label for="ranking-estrelas">Estrelas</label>
+                        <input type="number" id="ranking-estrelas" oninput="calcularRankingValor()">
+                    </div>
+                    <div class="field">
+                        <label for="ranking-missoes">Missões</label>
+                        <input type="number" id="ranking-missoes" oninput="calcularRankingValor()">
+                    </div>
+                    <div class="field">
+                        <label for="ranking-valor">Valor</label>
+                        <input type="number" id="ranking-valor" readonly>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="credito-mercenario">Crédito Mercenário</label>
+                    <input type="number" id="credito-mercenario" readonly>
+                </div>
+            </div>
+        </div>
+        <div id="notes" class="tab-content">
+            <div class="field">
+                <label for="notes-textarea">Anotações</label>
+                <div id="notes-container">
+                    <!-- Anotações serão adicionadas aqui -->
+                </div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarAnotacao()">Adicionar Anotação</button>
+                    <button type="button" onclick="removerUltimaAnotacao()">Remover Última Anotação</button>
+                </div>
+            </div>
+        </div>
+        <div id="conjuration" class="tab-content">
+            <div class="group">
+                <label>Custo de AB das Magias</label>
+                <table style="margin: 0 auto; text-align: center;">
+                    <tr>
+                        <th>AB</th>
+                        <th>Escala 1</th>
+                        <th>Escala 2</th>
+                        <th>Escala 3</th>
+                        <th>Escala 4</th>
+                        <th>Escala 5</th>
+                        <th>Escala 6</th>
+                    </tr>
+                    <tr>
+                        <td>Concentração</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>2</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>Gesto</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>2</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Fala</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>2</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="group">
+                <label>Custo de Mana das Magias</label>
+                <table style="margin: 0 auto; text-align: center;">
+                    <tr>
+                        <th>Mana</th>
+                        <th>Escala 1</th>
+                        <th>Escala 2</th>
+                        <th>Escala 3</th>
+                        <th>Escala 4</th>
+                        <th>Escala 5</th>
+                        <th>Escala 6</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="field">
+                <label for="magias">Escala 1</label>
+                <div id="magias-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarMagia()">Adicionar</button>
+                    <button type="button" onclick="removerUltimaMagia()">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala2">Escala 2</label>
+                <div id="escala2-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala2-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala2-container')">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala3">Escala 3</label>
+                <div id="escala3-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala3-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala3-container')">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala4">Escala 4</label>
+                <div id="escala4-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala4-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala4-container')">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala5">Escala 5</label>
+                <div id="escala5-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala5-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala5-container')">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala6">Escala 6</label>
+                <div id="escala6-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala6-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala6-container')">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala7">Escala 7</label>
+                <div id="escala7-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala7-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala7-container')">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala8">Escala 8</label>
+                <div id="escala8-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala8-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala8-container')">Remover</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="escala9">Escala 9</label>
+                <div id="escala9-container"></div>
+                <div class="button-group">
+                    <button type="button" onclick="adicionarEscala('escala9-container')">Adicionar</button>
+                    <button type="button" onclick="removerUltimaEscala('escala9-container')">Remover</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dice" class="tab-content">
+            <div class="field">
+                <label for="dice-result">Dados</label>
+                <div class="dice-button-group">
+                    <button type="button" onclick="adicionarDado(20)">d20</button>
+                    <button type="button" onclick="adicionarDado(12)">d12</button>
+                    <button type="button" onclick="adicionarDado(100)">d100</button>
+                    <button type="button" onclick="adicionarDado(10)">d10</button>
+                </div>
+                <div class="dice-button-group">
+                    <button type="button" onclick="adicionarDado(8)">d8</button>
+                    <button type="button" onclick="adicionarDado(6)">d6</button>
+                    <button type="button" onclick="adicionarDado(4)">d4</button>
+                    <button type="button" onclick="adicionarDado(2)">d2</button>
+                </div>
+                <div class="button-group" style="margin-top: 20px;">
+                    <button type="button" onclick="rolarTodosDados()">Rolar Dados</button>
+                    <button type="button" onclick="removerUltimoDado()">Remover</button>
+                </div>
+                <div class="field" style="margin-top: 20px;">
+                    <label for="dice-result">Resultado</label>
+                    <input type="text" id="dice-result" readonly>
+                </div>
+            </div>
+        </div>
+        <div id="npc" class="tab-content">
+            <div class="field">
+                <button onclick="generateCharacter()">Criar NPC</button>
+                <button onclick="anotarNPC()">Anotar NPC</button>
+                <div id="character" class="result"></div>
+            </div>
+        </div>
+<div id="configuration" class="tab-content" style="padding: 20px;">
+    <div class="header" style="text-align: center; margin-bottom: 20px;">
+        <h2 style="color: #007bff;">Configurações</h2>
+    </div>
+    <div class="field" style="margin-bottom: 20px; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+        <label for="background-color" style="flex: 1; font-weight: bold; margin-right: 10px;">Cor de Fundo</label>
+        <input type="color" id="background-color" onchange="alterarCor('background', this.value)" style="width: 60px; height: 40px; border: none; border-radius: 5px; cursor: pointer; transition: transform 0.2s;">
+    </div>
+    <div class="field" style="margin-bottom: 20px; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+        <label for="text-color" style="flex: 1; font-weight: bold; margin-right: 10px;">Cor do Texto</label>
+        <input type="color" id="text-color" onchange="alterarCor('color', this.value)" style="width: 60px; height: 40px; border: none; border-radius: 5px; cursor: pointer; transition: transform 0.2s;">
+    </div>
+    <div class="field" style="margin-bottom: 20px; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+        <label for="container-color" style="flex: 1; font-weight: bold; margin-right: 10px;">Cor do Container</label>
+        <input type="color" id="container-color" onchange="alterarCor('container', this.value)" style="width: 60px; height: 40px; border: none; border-radius: 5px; cursor: pointer; transition: transform 0.2s;">
+    </div>
+    <div class="field" style="margin-bottom: 20px; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+        <label for="text-font" style="flex: 1; font-weight: bold; margin-right: 10px;">Fonte do Texto</label>
+        <select id="text-font" onchange="alterarFonte(this.value)" style="width: 200px; height: 40px; border: none; border-radius: 5px; cursor: pointer; transition: transform 0.2s;">
+            <option value="Arial">Arial</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+        </select>
+    </div>
+    <div class="field" style="margin-bottom: 20px; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+        <label for="text-size" style="flex: 1; font-weight: bold; margin-right: 10px;">Tamanho do Texto</label>
+        <input type="number" id="text-size" onchange="alterarTamanhoTexto(this.value)" style="width: 60px; height: 40px; border: none; border-radius: 5px; cursor: pointer; transition: transform 0.2s;" min="10" max="30">
+    </div>
+    <div class="header" style="text-align: center; margin-bottom: 20px;">
+        <h2 style="color: #007bff;">Conheça NeoGhaluni</h2>
+        <p>Conheça NeoGhaluni e personalize sua experiência.</p>
+    </div>
+    <ul style="list-style: none; padding: 0; text-align: center; margin-bottom: 20px;">
+        <li style="display: inline-block; margin: 0 10px;">
+            <a href="https://discord.gg/mywwNvPV" target="_blank" style="color: #007bff; text-decoration: none; transition: color 0.3s;">Discord</a>
+        </li>
+        <li style="display: inline-block; margin: 0 10px;">
+            <a href="https://www.youtube.com/@ghaluni" target="_blank" style="color: #007bff; text-decoration: none; transition: color 0.3s;">YouTube</a>
+        </li>
+        <li style="display: inline-block; margin: 0 10px;">
+            <a href="https://www.instagram.com/ghalunioficial/" target="_blank" style="color: #007bff; text-decoration: none; transition: color 0.3s;">Instagram</a>
+        </li>
+        <li style="display: inline-block; margin: 0 10px;">
+            <a href="https://www.facebook.com/ghalunioficial" target="_blank" style="color: #007bff; text-decoration: none; transition: color 0.3s;">Facebook</a>
+        </li>
+    </ul>
+</div>
+
+
+
+
+    <script>
+        let diceStack = [];
+
+        function showTab(tabName) {
+            var tabs = document.querySelectorAll('.tab');
+            var tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+
+            tabContents.forEach(function(content) {
+                content.classList.remove('active');
+            });
+
+            document.querySelector('.tab[onclick="showTab(\'' + tabName + '\')"]').classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function adicionarOpiniao() {
+            var container = document.getElementById('opinioes-container');
+            var input = document.createElement('input');
+            input.type = 'text';
+            container.appendChild(input);
+            saveToLocalStorage();
+        }
+
+        function removerUltimaOpiniao() {
+            var container = document.getElementById('opinioes-container');
+            if (container.children.length > 0) {
+                container.removeChild(container.lastChild);
+                saveToLocalStorage();
+            }
+        }
+
+        function adicionarOficio() {
+            var container = document.getElementById('oficio-container');
+            var input = document.createElement('input');
+            input.type = 'text';
+            container.appendChild(input);
+            saveToLocalStorage();
+        }
+
+        function removerUltimoOficio() {
+            var container = document.getElementById('oficio-container');
+            if (container.children.length > 0) {
+                container.removeChild(container.lastChild);
+                saveToLocalStorage();
+            }
+        }
+
+        function adicionarMagia() {
+            var container = document.getElementById('magias-container');
+            var input = document.createElement('input');
+            input.type = 'text';
+            container.appendChild(input);
+            saveToLocalStorage();
+        }
+
+        function removerUltimaMagia() {
+            var container = document.getElementById('magias-container');
+            if (container.children.length > 0) {
+                container.removeChild(container.lastChild);
+                saveToLocalStorage();
+            }
+        }
+
+        function adicionarItem() {
+            var container = document.getElementById('item-container');
+            var input = document.createElement('input');
+            input.type = 'text';
+            container.appendChild(input);
+            saveToLocalStorage();
+        }
+
+        function removerUltimoItem() {
+            var container = document.getElementById('item-container');
+            if (container.children.length > 0) {
+                container.removeChild(container.lastChild);
+                saveToLocalStorage();
+            }
+        }
+
+        function adicionarHabilidade() {
+            var container = document.getElementById('habilidades-container');
+            var input = document.createElement('input');
+            input.type = 'text';
+            container.appendChild(input);
+            saveToLocalStorage();
+        }
+
+        function removerUltimaHabilidade() {
+            var container = document.getElementById('habilidades-container');
+            if (container.children.length > 0) {
+                container.removeChild(container.lastChild);
+                saveToLocalStorage();
+            }
+        }
+
+        function adicionarAnotacao() {
+            var container = document.getElementById('notes-container');
+            var textarea = document.createElement('textarea');
+            textarea.rows = 3;
+            container.appendChild(textarea);
+            saveToLocalStorage();
+        }
+
+        function removerUltimaAnotacao() {
+            var container = document.getElementById('notes-container');
+            if (container.children.length > 0) {
+                container.removeChild(container.lastChild);
+                saveToLocalStorage();
+            }
+        }
+
+        function adicionarEscala(containerId) {
+            var container = document.getElementById(containerId);
+            var input = document.createElement('input');
+            input.type = 'text';
+            container.appendChild(input);
+            saveToLocalStorage();
+        }
+
+        function removerUltimaEscala(containerId) {
+            var container = document.getElementById(containerId);
+            if (container.children.length > 0) {
+                container.removeChild(container.lastChild);
+                saveToLocalStorage();
+            }
+        }
+
+        function marcarGradativo(containerId) {
+            var checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]`);
+            checkboxes.forEach((checkbox, index) => {
+                checkbox.addEventListener('change', function() {
+                    if (checkbox.checked) {
+                        for (let i = 0; i <= index; i++) {
+                            checkboxes[i].checked = true;
+                        }
+                    } else {
+                        for (let i = checkboxes.length - 1; i >= index; i--) {
+                            checkboxes[i].checked = false;
+                        }
+                    }
+                    saveToLocalStorage();
+                });
+            });
+        }
+
+        function calcularRankingValor() {
+            var estrelas = parseInt(document.getElementById('ranking-estrelas').value) || 0;
+            var missoes = parseInt(document.getElementById('ranking-missoes').value) || 0;
+            var valor = estrelas - missoes;
+            document.getElementById('ranking-valor').value = valor;
+            calcularCreditoMercenario();
+            saveToLocalStorage();
+        }
+
+        function calcularCreditoMercenario() {
+            var valor = parseInt(document.getElementById('ranking-valor').value) || 0;
+            var grauMercenario = parseInt(document.getElementById('grau-mercenario').value) || 0;
+            var nivel = parseInt(document.getElementById('nivel').value) || 0;
+            var creditoMercenario = (valor + grauMercenario) * nivel;
+            document.getElementById('credito-mercenario').value = creditoMercenario;
+            saveToLocalStorage();
+        }
+function alterarFonte(fonte) {
+    document.body.style.fontFamily = fonte;
+    saveToLocalStorage();
+}
+
+function alterarTamanhoTexto(tamanho) {
+    document.body.style.fontSize = tamanho + 'px';
+    saveToLocalStorage();
+}
+
+
+function alterarOpacidadeContainer(opacidade) {
+    document.querySelector('.container').style.opacity = opacidade;
+    saveToLocalStorage();
+}
+
+function alterarSomNotificacao(som) {
+    // Aqui você pode adicionar o código para ativar/desativar sons de notificação
+    // Exemplo:
+    if (som === 'on') {
+        // Ativar sons de notificação
+    } else {
+        // Desativar sons de notificação
+    }
+    saveToLocalStorage();
+}
+
+function alterarIdioma(idioma) {
+    // Aqui você pode adicionar o código para alterar o idioma da interface
+    // Exemplo:
+    if (idioma === 'pt-br') {
+        // Alterar para Português
+    } else if (idioma === 'en') {
+        // Alterar para Inglês
+    } else if (idioma === 'es') {
+        // Alterar para Espanhol
+    }
+    saveToLocalStorage();
+}
+
+        function salvarPersonagem() {
+            var nomePersonagem = document.getElementById('nome-personagem').value || "Personagem de NeoGhaluni";
+            var dados = {
+                nome: nomePersonagem,
+                nivel: document.getElementById('nivel').value,
+                xp: Array.from(document.querySelectorAll('#xp-container input')).map(checkbox => checkbox.checked),
+                raca: document.getElementById('raca').value,
+                classeBase: document.getElementById('classeBase').value,
+                classeIntermediaria: document.getElementById('classeIntermediaria').value,
+                sobreclasse: document.getElementById('sobreclasse').value,
+                divindade: document.getElementById('divindade').value,
+                bondade: Array.from(document.querySelectorAll('#bondade-container input')).map(checkbox => checkbox.checked),
+                disciplina: Array.from(document.querySelectorAll('#disciplina-container input')).map(checkbox => checkbox.checked),
+                ousadia: Array.from(document.querySelectorAll('#ousadia-container input')).map(checkbox => checkbox.checked),
+                oficios: Array.from(document.getElementById('oficio-container').children).map(input => input.value),
+                noroi: document.getElementById('noroi').value,
+                kiroi: document.getElementById('kiroi').value,
+                recurso: document.getElementById('recurso').value,
+                opinioes: Array.from(document.getElementById('opinioes-container').children).map(input => input.value),
+                limiteAB: document.getElementById('limite-ab').value,
+                ab: document.getElementById('ab').value,
+                fisico: document.getElementById('fisico').value,
+                fisicoPericiaChave: document.getElementById('fisico-pericia-chave').checked,
+                atletismo: document.getElementById('atletismo').value,
+                defesa: document.getElementById('defesa').value,
+                furtividade: document.getElementById('furtividade').value,
+                manejar: document.getElementById('manejar').value,
+                pontaria: document.getElementById('pontaria').value,
+                intelecto: document.getElementById('intelecto').value,
+                intelectoPericiaChave: document.getElementById('intelecto-pericia-chave').checked,
+                artimanha: document.getElementById('artimanha').value,
+                conhecimento: document.getElementById('conhecimento').value,
+                oficioIntelecto: document.getElementById('oficio-intelecto').value,
+                persuasao: document.getElementById('persuasao').value,
+                poderArcano: document.getElementById('poderArcano').value,
+                consciencia: document.getElementById('consciencia').value,
+                conscienciaPericiaChave: document.getElementById('consciencia-pericia-chave').checked,
+                empatia: document.getElementById('empatia').value,
+                enfermagem: document.getElementById('enfermagem').value,
+                percepcao: document.getElementById('percepcao').value,
+                poderDivino: document.getElementById('poderDivino').value,
+                vontade: document.getElementById('vontade').value,
+                magias: Array.from(document.getElementById('magias-container').children).map(input => input.value),
+                escala2: Array.from(document.getElementById('escala2-container').children).map(input => input.value),
+                escala3: Array.from(document.getElementById('escala3-container').children).map(input => input.value),
+                escala4: Array.from(document.getElementById('escala4-container').children).map(input => input.value),
+                escala5: Array.from(document.getElementById('escala5-container').children).map(input => input.value),
+                escala6: Array.from(document.getElementById('escala6-container').children).map(input => input.value),
+                escala7: Array.from(document.getElementById('escala7-container').children).map(input => input.value),
+                escala8: Array.from(document.getElementById('escala8-container').children).map(input => input.value),
+                escala9: Array.from(document.getElementById('escala9-container').children).map(input => input.value),
+                anotacoes: Array.from(document.getElementById('notes-container').children).map(textarea => textarea.value),
+                dados: diceStack,
+                configuracoes: {
+                    backgroundColor: document.getElementById('background-color').value,
+                    textColor: document.getElementById('text-color').value,
+                    containerColor: document.getElementById('container-color').value
+                },
+                habilidadeRegional: document.getElementById('habilidade-regional').value,
+                items: Array.from(document.getElementById('item-container').children).map(input => input.value),
+                habilidades: Array.from(document.getElementById('habilidades-container').children).map(input => input.value),
+                grauMercenario: document.getElementById('grau-mercenario').value,
+                medalhasPositivas: Array.from(document.querySelectorAll('#medalhas-positivas-container input')).map(checkbox => checkbox.checked),
+                medalhasNegativas: Array.from(document.querySelectorAll('#medalhas-negativas-container input')).map(checkbox => checkbox.checked),
+                rankingEstrelas: document.getElementById('ranking-estrelas').value,
+                rankingMissoes: document.getElementById('ranking-missoes').value,
+                rankingValor: document.getElementById('ranking-valor').value,
+                creditoMercenario: document.getElementById('credito-mercenario').value
+            };
+
+            var blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = nomePersonagem + ".txt";
+            link.click();
+        }
+
+        function carregarPersonagem() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt, .json';
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var dados = JSON.parse(e.target.result);
+                    document.getElementById('nome-personagem').value = dados.nome || '';
+                    document.getElementById('nivel').value = dados.nivel || '';
+                    document.querySelectorAll('#xp-container input').forEach((checkbox, index) => {
+                        checkbox.checked = dados.xp[index];
+                    });
+                    document.getElementById('raca').value = dados.raca || '';
+                    document.getElementById('classeBase').value = dados.classeBase || '';
+                    document.getElementById('classeIntermediaria').value = dados.classeIntermediaria || '';
+                    document.getElementById('sobreclasse').value = dados.sobreclasse || '';
+                    document.getElementById('divindade').value = dados.divindade || '';
+                    document.querySelectorAll('#bondade-container input').forEach((checkbox, index) => {
+                        checkbox.checked = dados.bondade[index];
+                    });
+                    document.querySelectorAll('#disciplina-container input').forEach((checkbox, index) => {
+                        checkbox.checked = dados.disciplina[index];
+                    });
+                    document.querySelectorAll('#ousadia-container input').forEach((checkbox, index) => {
+                        checkbox.checked = dados.ousadia[index];
+                    });
+                    document.getElementById('limite-ab').value = dados.limiteAB || '';
+                    document.getElementById('ab').value = dados.ab || '';
+                    document.getElementById('fisico').value = dados.fisico || '';
+                    document.getElementById('fisico-pericia-chave').checked = dados.fisicoPericiaChave || false;
+                    document.getElementById('atletismo').value = dados.atletismo || '';
+                    document.getElementById('defesa').value = dados.defesa || '';
+                    document.getElementById('furtividade').value = dados.furtividade || '';
+                    document.getElementById('manejar').value = dados.manejar || '';
+                    document.getElementById('pontaria').value = dados.pontaria || '';
+                    document.getElementById('intelecto').value = dados.intelecto || '';
+                    document.getElementById('intelecto-pericia-chave').checked = dados.intelectoPericiaChave || false;
+                    document.getElementById('artimanha').value = dados.artimanha || '';
+                    document.getElementById('conhecimento').value = dados.conhecimento || '';
+                    document.getElementById('oficio-intelecto').value = dados.oficioIntelecto || '';
+                    document.getElementById('persuasao').value = dados.persuasao || '';
+                    document.getElementById('poderArcano').value = dados.poderArcano || '';
+                    document.getElementById('consciencia').value = dados.consciencia || '';
+                    document.getElementById('consciencia-pericia-chave').checked = dados.conscienciaPericiaChave || false;
+                    document.getElementById('empatia').value = dados.empatia || '';
+                    document.getElementById('enfermagem').value = dados.enfermagem || '';
+                    document.getElementById('percepcao').value = dados.percepcao || '';
+                    document.getElementById('poderDivino').value = dados.poderDivino || '';
+                    document.getElementById('vontade').value = dados.vontade || '';
+
+                    document.getElementById('habilidade-regional').value = dados.habilidadeRegional || '';
+                    document.getElementById('noroi').value = dados.noroi || '';
+                    document.getElementById('kiroi').value = dados.kiroi || '';
+                    document.getElementById('recurso').value = dados.recurso || '';
+
+                    // Limpar e carregar ofícios
+                    var oficioContainer = document.getElementById('oficio-container');
+                    oficioContainer.innerHTML = '';
+                    (dados.oficios || []).forEach(function(oficio) {
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = oficio;
+                        oficioContainer.appendChild(input);
+                    });
+
+                    // Limpar e carregar opiniões
+                    var opinioesContainer = document.getElementById('opinioes-container');
+                    opinioesContainer.innerHTML = '';
+                    (dados.opinioes || []).forEach(function(opiniao) {
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = opiniao;
+                        opinioesContainer.appendChild(input);
+                    });
+
+                    // Limpar e carregar magias
+                    var magiasContainer = document.getElementById('magias-container');
+                    magiasContainer.innerHTML = '';
+                    (dados.magias || []).forEach(function(magia) {
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = magia;
+                        magiasContainer.appendChild(input);
+                    });
+
+                    // Limpar e carregar escalas
+                    var escalaContainers = ['escala2', 'escala3', 'escala4', 'escala5', 'escala6', 'escala7', 'escala8', 'escala9'];
+                    escalaContainers.forEach(function(escala) {
+                        var container = document.getElementById(escala + '-container');
+                        container.innerHTML = '';
+                        (dados[escala] || []).forEach(function(item) {
+                            var input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = item;
+                            container.appendChild(input);
+                        });
+                    });
+
+                    // Limpar e carregar itens
+                    var itemContainer = document.getElementById('item-container');
+                    itemContainer.innerHTML = '';
+                    (dados.items || []).forEach(function(item) {
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = item;
+                        itemContainer.appendChild(input);
+                    });
+
+                    // Limpar e carregar habilidades
+                    var habilidadesContainer = document.getElementById('habilidades-container');
+                    habilidadesContainer.innerHTML = '';
+                    (dados.habilidades || []).forEach(function(habilidade) {
+                        var input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = habilidade;
+                        habilidadesContainer.appendChild(input);
+                    });
+
+                    // Limpar e carregar anotações
+                    var notesContainer = document.getElementById('notes-container');
+                    notesContainer.innerHTML = '';
+                    (dados.anotacoes || []).forEach(function(anotacao) {
+                        var textarea = document.createElement('textarea');
+                        textarea.rows = 3;
+                        textarea.value = anotacao;
+                        notesContainer.appendChild(textarea);
+                    });
+
+                    // Carregar dados da carteira de mercenário
+                    document.getElementById('grau-mercenario').value = dados.grauMercenario || '';
+                    document.querySelectorAll('#medalhas-positivas-container input').forEach((checkbox, index) => {
+                        checkbox.checked = dados.medalhasPositivas[index];
+                    });
+                    document.querySelectorAll('#medalhas-negativas-container input').forEach((checkbox, index) => {
+                        checkbox.checked = dados.medalhasNegativas[index];
+                    });
+                    document.getElementById('ranking-estrelas').value = dados.rankingEstrelas || '';
+                    document.getElementById('ranking-missoes').value = dados.rankingMissoes || '';
+                    document.getElementById('ranking-valor').value = dados.rankingValor || '';
+                    document.getElementById('credito-mercenario').value = dados.creditoMercenario || '';
+
+                    // Restauração das configurações
+                    if (dados.configuracoes) {
+                        document.getElementById('background-color').value = dados.configuracoes.backgroundColor || '#1e1e1e';
+                        document.getElementById('text-color').value = dados.configuracoes.textColor || '#c7c7c7';
+                        document.getElementById('container-color').value = dados.configuracoes.containerColor || '#2e2e2e';
+
+                        document.body.style.backgroundColor = dados.configuracoes.backgroundColor || '#1e1e1e';
+                        document.body.style.color = dados.configuracoes.textColor || '#c7c7c7';
+                        document.querySelector('.container').style.backgroundColor = dados.configuracoes.containerColor || '#2e2e2e';
+                    }
+
+                    // Carregar dados de rolagem de dados
+                    diceStack = dados.dados || [];
+                    atualizarDisplayDados();
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+
+        function adicionarDado(lados) {
+            diceStack.push({ lados });
+            atualizarDisplayDados();
+            saveToLocalStorage();
+        }
+
+        function removerUltimoDado() {
+            if (diceStack.length > 0) {
+                diceStack.pop();
+            }
+            atualizarDisplayDados();
+            saveToLocalStorage();
+        }
+
+        function atualizarDisplayDados() {
+            const display = diceStack.map((dado, index) => {
+                if (index !== 0) {
+                    return `+ d${dado.lados}`;
+                }
+                return `d${dado.lados}`;
+            }).join(' ');
+            document.getElementById('dice-result').value = display;
+        }
+
+        function rolarTodosDados() {
+            let total = 0;
+            let resultado = diceStack.map(dado => {
+                const valor = rolarDados(dado.lados);
+                total += valor;
+                return `${valor}`;
+            }).join(' + ');
+
+            resultado = `(${resultado}) Total: ${total}`;
+            document.getElementById('dice-result').value = resultado;
+            diceStack = []; // Clear the stack after rolling
+            saveToLocalStorage();
+        }
+
+        function rolarDados(lados) {
+            return Math.floor(Math.random() * lados) + 1;
+        }
+
+function alterarNivel(valor) {
+    var nivelInput = document.getElementById('nivel');
+    var nivelAtual = parseInt(nivelInput.value) || 1;
+    var novoNivel = nivelAtual + valor;
+
+    if (novoNivel < 1) {
+        novoNivel = 1;
+    }
+
+    nivelInput.value = novoNivel;
+    saveToLocalStorage();
+}
+
+function alterarAB(valor) {
+    var abInput = document.getElementById('ab');
+    var abAtual = parseInt(abInput.value) || 0;
+    var novoAB = abAtual + valor;
+
+    if (novoAB < 0) {
+        novoAB = 0;
+    }
+
+    abInput.value = novoAB;
+    saveToLocalStorage();
+}
+
+
+        function generateCharacter() {
+            const level = Math.floor(Math.random() * 30) + 1;
+
+            let firstName = getRandomElement([...fantasyNamePrefixes, ...portugueseFirstNames, ...japaneseFirstNames]);
+            let lastName = getRandomElement([...fantasyNameSuffixes, ...portugueseLastNames, ...japaneseLastNames, ...surnamePrefixes, ...surnameSuffixes]);
+
+            const race = getRandomElement(races);
+            const baseClass = getRandomElement(baseClasses);
+            const deity = getRandomElement(deities);
+            const location = getRandomElement(locations);
+            const bondade = Math.floor(Math.random() * 6);
+            const disciplina = Math.floor(Math.random() * 6);
+            const ousadia = Math.floor(Math.random() * 6);
+            const noroi = Math.floor(Math.random() * 20) + 1;
+            const kiroi = Math.floor(Math.random() * 90) + 10;
+            const recurso = Math.floor(Math.random() * 10) + 1;
+            const treatyOpinion = getRandomElement(treatyOpinions);
+            const robotOpinion = getRandomElement(robotOpinions);
+            const mercenaryOpinion = getRandomElement(mercenaryOpinions);
+            const kingCouncilOpinion = getRandomElement(kingCouncilOpinions);
+            const countryUnionOpinion = getRandomElement(countryUnionOpinions);
+            const lifeMatrixOpinion = getRandomElement(lifeMatrixOpinions);
+
+            let characterInfo = `
+                <div><span class="npc-title">Nome</span><span class="npc-result">${firstName} ${lastName}</span></div>
+                <div><span class="npc-title">Nível</span><span class="npc-result">${level}</span></div>
+                <div><span class="npc-title">Raça</span><span class="npc-result">${race}</span></div>
+                <div><span class="npc-title">Classe Base</span><span class="npc-result">${baseClass}</span></div>
+            `;
+
+            if (level >= 11) {
+                const intermediateClass = getRandomElement(intermediateClasses);
+                characterInfo += `<div><span class="npc-title">Classe Intermediária</span><span class="npc-result">${intermediateClass}</span></div>`;
+            }
+
+            if (level >= 21) {
+                const superClass = getRandomElement(superClasses);
+                characterInfo += `<div><span class="npc-title">SobreClasse</span><span class="npc-result">${superClass}</span></div>`;
+            }
+
+            characterInfo += `
+                <div><span class="npc-title">Divindade</span><span class="npc-result">${deity}</span></div>
+                <div><span class="npc-title">Localidade</span><span class="npc-result">${location}</span></div>
+                <div><span class="npc-title">Bondade</span><span class="npc-result">${bondade}</span></div>
+                <div><span class="npc-title">Disciplina</span><span class="npc-result">${disciplina}</span></div>
+                <div><span class="npc-title">Ousadia</span><span class="npc-result">${ousadia}</span></div>
+                <div><span class="npc-title">Noroi</span><span class="npc-result">${noroi}</span></div>
+                <div><span class="npc-title">Kiroi</span><span class="npc-result">${kiroi}</span></div>
+                <div><span class="npc-title">Recurso</span><span class="npc-result">${recurso}</span></div>
+                <div><span class="npc-title">Opinião Quanto ao Tratado</span><span class="npc-result">${treatyOpinion}</span></div>
+                <div><span class="npc-title">Opinião Quanto aos Robôs</span><span class="npc-result">${robotOpinion}</span></div>
+                <div><span class="npc-title">Opinião Quanto aos Mercenários</span><span class="npc-result">${mercenaryOpinion}</span></div>
+                <div><span class="npc-title">Opinião Quanto aos Reis ou Conselhos</span><span class="npc-result">${kingCouncilOpinion}</span></div>
+                <div><span class="npc-title">Opinião Quanto a União de Países</span><span class="npc-result">${countryUnionOpinion}</span></div>
+                <div><span class="npc-title">Opinião Quanto a possíveis outras Matrizes de Vida</span><span class="npc-result">${lifeMatrixOpinion}</span></div>
+            `;
+
+            document.getElementById("character").innerHTML = characterInfo;
+        }
+
+        function anotarNPC() {
+            var characterInfo = document.getElementById('character').innerHTML;
+            var container = document.getElementById('notes-container');
+            var textarea = document.createElement('textarea');
+            textarea.rows = 10;
+            textarea.value = characterInfo.replace(/<\/?div>/g, '').replace(/<\/?span[^>]*>/g, ' ').replace(/\s\s+/g, '\n').trim();
+            container.appendChild(textarea);
+            saveToLocalStorage();
+        }
+
+        const fantasyNamePrefixes = [
+            "Aer", "Ald", "Ar", "Bael", "Bar", "Bel", "Cael", "Dar", "Del", "Dor", "El", "Er", "Fael", "Gar", "Gal", "Hal", "Har", "Jar", "Kar", "Lael", "Lor", "Mar", "Mor", "Nael", "Nor", "Oel", "Or", "Pael", "Pel", "Quar", "Rael", "Sar", "Sel", "Tar", "Tel", "Thael", "Thor", "Ur", "Var", "Vor", "Wael", "Xar", "Yar", "Zar"
+        ];
+
+        const fantasyNameSuffixes = [
+            "ael", "aen", "aer", "aeth", "aith", "al", "an", "ar", "ath", "ean", "el", "en", "er", "eth", "ian", "il", "in", "ir", "ith", "oan", "or", "oth", "uan", "uel", "ur", "uth", "yn"
+        ];
+
+        const portugueseFirstNames = [
+            "Ana", "Bruno", "Carlos", "Daniela", "Eduardo", "Fernanda", "Gustavo", "Helena", "Igor", "Juliana", "Lucas", "Mariana", "Nicolas", "Olivia", "Paulo", "Raquel", "Sofia", "Tiago", "Vanessa", "Yuri"
+        ];
+
+        const portugueseLastNames = [
+            "Almeida", "Barros", "Castro", "Dias", "Fernandes", "Gomes", "Lima", "Martins", "Nunes", "Oliveira", "Pereira", "Ribeiro", "Silva", "Souza", "Teixeira", "Vieira"
+        ];
+
+        const japaneseFirstNames = [
+            "Aiko", "Daichi", "Emiko", "Haruto", "Kaori", "Kenji", "Miyuki", "Natsuki", "Riku", "Sakura", "Takeshi", "Yui"
+        ];
+
+        const japaneseLastNames = [
+            "Tanaka", "Suzuki", "Sato", "Yamamoto", "Watanabe", "Nakamura", "Kobayashi", "Kato", "Yoshida", "Yamada"
+        ];
+
+        const surnamePrefixes = [
+            "Silver", "Gold", "Bronze", "Iron", "Stone", "Flame", "Ice", "Shadow", "Storm", "Wind", "Wolf", "Fox", "Bear", "Lion", "Dragon", "Eagle", "Raven", "Phoenix", "Thunder", "Steel"
+        ];
+
+        const surnameSuffixes = [
+            "blade", "claw", "fang", "fire", "heart", "hunter", "song", "spear", "strike", "watcher", "whisper", "wing"
+        ];
+
+        const races = [
+            "Anão", "Askoni", "Doppelganger", "Draconiano", "Elfo de Alfel", "Elfo de Taru", "Ghalgar", "Gnomo", "Goblin", "Halfling", "Humano de Alfel", "Humano de Taru", "Loxodonte", "Zoonino Puro-Sangue", "Zoonino Mestiço", "Nyata", "Orc", "Robô", "Taurino", "Teshi", "Títere", "Troll"
+        ];
+
+        const baseClasses = [
+            "Atirador", "Bárbaro", "Bardo", "Caçador", "Clérigo", "Druida", "Feiticeiro", "Guerreiro", "Ladino", "Lutador", "Mago", "Monge", "Paladino", "Samurai"
+        ];
+
+        const intermediateClasses = [
+            "Adepto Elemental", "Alquimista", "Arcanista", "Batedor", "Defensor", "Furioso", "Geomancer", "Guardião", "Invocador", "Manifestador do Âmago", "Marcial", "Menestrel", "Ninja", "Soldado", "Trapaceiro"
+        ];
+
+        const superClasses = [
+            "Aedo", "Arauto", "Arquimago", "Assassino", "Berserker", "Evocador", "Mestre Combativo", "Mestre da Guerra", "Mestre Domador", "Necromante", "Senhor Selvagem", "Sniper", "Sumo Sacerdote", "Tecnopata", "Xogum"
+        ];
+
+        const deities = [
+            "Éden Laúi", "Fleius goelt", "Kazume Nayan", "Kimara Phreiya", "Licênia Vank Nyon", "Ludaw Aukih", "Magroc Locke", "Mepharestus Loxor", "Namã Zankern", "Un’zero Kraken", "Wadul Aukih", "Zenemos Aker"
+        ];
+
+        const locations = [
+            "Alfel", "Taru", "NeoGhaluni"
+        ];
+
+        const treatyOpinions = [
+            "A favor, pois ele quer gerar a paz no mundo.",
+            "A favor, e acho que ele deveria ser ainda mais rígido.",
+            "Concordo em parte, acho que ele precisa de alterações.",
+            "Não me importo, desde que não me interfira.",
+            "Contra, pois ele atrasa o avanço do mundo.",
+            "Contra, pois é uma farsa manipulada pelos líderes mundiais."
+        ];
+
+        const robotOpinions = [
+            "Devem ser respeitados e inseridos na sociedade.",
+            "Podem viver em sociedade, mas não ocupar lideranças.",
+            "Não me importo, desde que não me interfiram.",
+            "Deviam viver sob total vigilância do governo.",
+            "Deviam viver em outra terra, isolados de qualquer sociedade.",
+            "Deviam ser extintos, pois causaram o apocalipse no passado."
+        ];
+
+        const mercenaryOpinions = [
+            "A favor, pois é apenas mais um trabalho honesto.",
+            "A favor, mas deveriam fiscalizar mais as missões recebidas.",
+            "A favor, mas deveriam fiscalizar a aceitação de membros.",
+            "Não me importo, desde que não me interfira.",
+            "Contra, pois há um submundo do crime em torno disso.",
+            "Contra, pois é uma farsa manipulada pelos líderes mundiais."
+        ];
+
+        const kingCouncilOpinions = [
+            "Prefiro Rei, pois todos os exemplos atuais são positivos.",
+            "Prefiro Conselho, pois a vigilância do Tratado fica diluída em um grupo.",
+            "Prefiro Rei, porque não confio em outro tipo de poder chegando.",
+            "Não me importo, desde que não me interfira.",
+            "Prefiro Conselho, porque não quero Reis governando.",
+            "Tanto faz Conselho ou Rei."
+        ];
+
+        const countryUnionOpinions = [
+            "A favor, pois ela quer gerar a paz no mundo.",
+            "A favor, e acho que ela deveria ser ainda mais rígida.",
+            "Concordo em parte, acho que ela precisa de alterações.",
+            "Não me importo, desde que não me interfira.",
+            "Contra, pois ela atrasa o avanço do mundo.",
+            "Contra, pois é uma farsa manipulada pelos líderes mundiais."
+        ];
+
+        const lifeMatrixOpinions = [
+            "Concordo, pois existem evidências em antigas civilizações.",
+            "Concordo, pois existem evidências em recentes experimentos.",
+            "Não tenho certeza, faltam mais estudos sobre isso.",
+            "Não me importo, desde que não me interfira.",
+            "Discordo, pois acho que a Terra é o único planeta que abriga vida.",
+            "Discordo, pois acho que a vida humana é única e divina."
+        ];
+
+        // Função para obter um elemento aleatório de um array
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function saveToLocalStorage() {
+            function saveToLocalStorage() {
+    localStorage.setItem('backgroundColor', document.getElementById('background-color').value);
+    localStorage.setItem('textColor', document.getElementById('text-color').value);
+    localStorage.setItem('containerColor', document.getElementById('container-color').value);
+    localStorage.setItem('textFont', document.getElementById('text-font').value);
+    localStorage.setItem('textSize', document.getElementById('text-size').value);
+    // Salve outras configurações conforme necessário
+}
+localStorage.setItem('backgroundColor', document.getElementById('background-color').value);
+            localStorage.setItem('textColor', document.getElementById('text-color').value);
+            localStorage.setItem('containerColor', document.getElementById('container-color').value);
+            const data = {
+                nomePersonagem: document.getElementById('nome-personagem').value,
+                nivel: document.getElementById('nivel').value,
+                xp: Array.from(document.querySelectorAll('#xp-container input')).map(checkbox => checkbox.checked),
+                raca: document.getElementById('raca').value,
+                classeBase: document.getElementById('classeBase').value,
+                classeIntermediaria: document.getElementById('classeIntermediaria').value,
+                sobreclasse: document.getElementById('sobreclasse').value,
+                divindade: document.getElementById('divindade').value,
+                bondade: Array.from(document.querySelectorAll('#bondade-container input')).map(checkbox => checkbox.checked),
+                disciplina: Array.from(document.querySelectorAll('#disciplina-container input')).map(checkbox => checkbox.checked),
+                ousadia: Array.from(document.querySelectorAll('#ousadia-container input')).map(checkbox => checkbox.checked),
+                oficios: Array.from(document.getElementById('oficio-container').children).map(input => input.value),
+                noroi: document.getElementById('noroi').value,
+                kiroi: document.getElementById('kiroi').value,
+                recurso: document.getElementById('recurso').value,
+                opinioes: Array.from(document.getElementById('opinioes-container').children).map(input => input.value),
+                limiteAB: document.getElementById('limite-ab').value,
+                ab: document.getElementById('ab').value,
+                fisico: document.getElementById('fisico').value,
+                fisicoPericiaChave: document.getElementById('fisico-pericia-chave').checked,
+                atletismo: document.getElementById('atletismo').value,
+                defesa: document.getElementById('defesa').value,
+                furtividade: document.getElementById('furtividade').value
+
+,
+                manejar: document.getElementById('manejar').value,
+                pontaria: document.getElementById('pontaria').value,
+                intelecto: document.getElementById('intelecto').value,
+                intelectoPericiaChave: document.getElementById('intelecto-pericia-chave').checked,
+                artimanha: document.getElementById('artimanha').value,
+                conhecimento: document.getElementById('conhecimento').value,
+                oficioIntelecto: document.getElementById('oficio-intelecto').value,
+                persuasao: document.getElementById('persuasao').value,
+                poderArcano: document.getElementById('poderArcano').value,
+                consciencia: document.getElementById('consciencia').value,
+                conscienciaPericiaChave: document.getElementById('consciencia-pericia-chave').checked,
+                empatia: document.getElementById('empatia').value,
+                enfermagem: document.getElementById('enfermagem').value,
+                percepcao: document.getElementById('percepcao').value,
+                poderDivino: document.getElementById('poderDivino').value,
+                vontade: document.getElementById('vontade').value,
+                magias: Array.from(document.getElementById('magias-container').children).map(input => input.value),
+                escala2: Array.from(document.getElementById('escala2-container').children).map(input => input.value),
+                habilidadeRegional: document.getElementById('habilidade-regional').value,
+                item: Array.from(document.getElementById('item-container').children).map(input => input.value),
+                habilidades: Array.from(document.getElementById('habilidades-container').children).map(input => input.value),
+                grauMercenario: document.getElementById('grau-mercenario').value,
+                medalhasPositivas: Array.from(document.querySelectorAll('#medalhas-positivas-container input')).map(checkbox => checkbox.checked),
+                medalhasNegativas: Array.from(document.querySelectorAll('#medalhas-negativas-container input')).map(checkbox => checkbox.checked),
+                rankingEstrelas: document.getElementById('ranking-estrelas').value,
+                rankingMissoes: document.getElementById('ranking-missoes').value,
+                rankingValor: document.getElementById('ranking-valor').value,
+                creditoMercenario: document.getElementById('credito-mercenario').value,
+                anotacoes: Array.from(document.getElementById('notes-container').children).map(textarea => textarea.value)
+            };
+
+            localStorage.setItem('personagemData', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('personagemData'));
+    if (!data) return;
+
+    document.getElementById('nome-personagem').value = data.nomePersonagem || '';
+    document.getElementById('nivel').value = data.nivel || '';
+    document.querySelectorAll('#xp-container input').forEach((checkbox, index) => {
+        checkbox.checked = data.xp[index];
+    });
+    document.querySelectorAll('#bondade-container input').forEach((checkbox, index) => {
+        checkbox.checked = data.bondade[index];
+    });
+    document.querySelectorAll('#disciplina-container input').forEach((checkbox, index) => {
+        checkbox.checked = data.disciplina[index];
+    });
+    document.querySelectorAll('#ousadia-container input').forEach((checkbox, index) => {
+        checkbox.checked = data.ousadia[index];
+    });
+    document.getElementById('raca').value = data.raca || '';
+    document.getElementById('classeBase').value = data.classeBase || '';
+    document.getElementById('classeIntermediaria').value = data.classeIntermediaria || '';
+    document.getElementById('sobreclasse').value = data.sobreclasse || '';
+    document.getElementById('divindade').value = data.divindade || '';
+    document.getElementById('limite-ab').value = data.limiteAB || '';
+    document.getElementById('ab').value = data.ab || '';
+    document.getElementById('fisico').value = data.fisico || '';
+    document.getElementById('fisico-pericia-chave').checked = data.fisicoPericiaChave || false;
+    document.getElementById('atletismo').value = data.atletismo || '';
+    document.getElementById('defesa').value = data.defesa || '';
+    document.getElementById('furtividade').value = data.furtividade || '';
+    document.getElementById('manejar').value = data.manejar || '';
+    document.getElementById('pontaria').value = data.pontaria || '';
+    document.getElementById('intelecto').value = data.intelecto || '';
+    document.getElementById('intelecto-pericia-chave').checked = data.intelectoPericiaChave || false;
+    document.getElementById('artimanha').value = data.artimanha || '';
+    document.getElementById('conhecimento').value = data.conhecimento || '';
+    document.getElementById('oficio-intelecto').value = data.oficioIntelecto || '';
+    document.getElementById('persuasao').value = data.persuasao || '';
+    document.getElementById('poderArcano').value = data.poderArcano || '';
+    document.getElementById('consciencia').value = data.consciencia || '';
+    document.getElementById('consciencia-pericia-chave').checked = data.conscienciaPericiaChave || false;
+    document.getElementById('empatia').value = data.empatia || '';
+    document.getElementById('enfermagem').value = data.enfermagem || '';
+    document.getElementById('percepcao').value = data.percepcao || '';
+    document.getElementById('poderDivino').value = data.poderDivino || '';
+    document.getElementById('vontade').value = data.vontade || '';
+    document.getElementById('grau-mercenario').value = data.grauMercenario || '';
+    document.querySelectorAll('#medalhas-positivas-container input').forEach((checkbox, index) => {
+        checkbox.checked = data.medalhasPositivas[index];
+    });
+    document.querySelectorAll('#medalhas-negativas-container input').forEach((checkbox, index) => {
+        checkbox.checked = data.medalhasNegativas[index];
+    });
+    document.getElementById('ranking-estrelas').value = data.rankingEstrelas || '';
+    document.getElementById('ranking-missoes').value = data.rankingMissoes || '';
+    document.getElementById('ranking-valor').value = data.rankingValor || '';
+    document.getElementById('credito-mercenario').value = data.creditoMercenario || '';
+    document.getElementById('habilidade-regional').value = data.habilidadeRegional || '';
+    document.getElementById('noroi').value = data.noroi || '';
+    document.getElementById('kiroi').value = data.kiroi || '';
+    document.getElementById('recurso').value = data.recurso || '';
+
+    // Limpar e carregar ofícios
+    var oficioContainer = document.getElementById('oficio-container');
+    oficioContainer.innerHTML = '';
+    (data.oficios || []).forEach(function(oficio) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = oficio;
+        oficioContainer.appendChild(input);
+    });
+
+    // Limpar e carregar opiniões
+    var opinioesContainer = document.getElementById('opinioes-container');
+    opinioesContainer.innerHTML = '';
+    (data.opinioes || []).forEach(function(opiniao) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = opiniao;
+        opinioesContainer.appendChild(input);
+    });
+
+    // Limpar e carregar magias
+    var magiasContainer = document.getElementById('magias-container');
+    magiasContainer.innerHTML = '';
+    (data.magias || []).forEach(function(magia) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = magia;
+        magiasContainer.appendChild(input);
+    });
+
+    // Limpar e carregar item
+    var itemContainer = document.getElementById('item-container');
+    itemContainer.innerHTML = '';
+    (data.item || []).forEach(function(item) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = item;
+        itemContainer.appendChild(input);
+    });
+
+    // Limpar e carregar habilidades
+    var habilidadesContainer = document.getElementById('habilidades-container');
+    habilidadesContainer.innerHTML = '';
+    (data.habilidades || []).forEach(function(habilidade) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = habilidade;
+        habilidadesContainer.appendChild(input);
+    });
+
+    // Limpar e carregar anotações
+    var notesContainer = document.getElementById('notes-container');
+    notesContainer.innerHTML = '';
+    (data.anotacoes || []).forEach(function(anotacao) {
+        var textarea = document.createElement('textarea');
+        textarea.rows = 3;
+        textarea.value = anotacao;
+        notesContainer.appendChild(textarea);
+    });
+
+    // Carregar configurações
+    const backgroundColor = localStorage.getItem('backgroundColor');
+    const textColor = localStorage.getItem('textColor');
+    const containerColor = localStorage.getItem('containerColor');
+    const textFont = localStorage.getItem('textFont');
+    const textSize = localStorage.getItem('textSize');
+
+    if (backgroundColor) document.getElementById('background-color').value = backgroundColor;
+    if (textColor) document.getElementById('text-color').value = textColor;
+    if (containerColor) document.getElementById('container-color').value = containerColor;
+    if (textFont) document.getElementById('text-font').value = textFont;
+    if (textSize) document.getElementById('text-size').value = textSize;
+}
+
+function limparPersonagem() {
+    document.getElementById('nome-personagem').value = '';
+    document.getElementById('nivel').value = '';
+    document.querySelectorAll('#xp-container input').forEach(checkbox => checkbox.checked = false);
+    document.querySelectorAll('#bondade-container input').forEach(checkbox => checkbox.checked = false);
+    document.querySelectorAll('#disciplina-container input').forEach(checkbox => checkbox.checked = false);
+    document.querySelectorAll('#ousadia-container input').forEach(checkbox => checkbox.checked = false);
+    document.getElementById('raca').value = '';
+    document.getElementById('classeBase').value = '';
+    document.getElementById('classeIntermediaria').value = '';
+    document.getElementById('sobreclasse').value = '';
+    document.getElementById('divindade').value = '';
+    document.getElementById('limite-ab').value = '';
+    document.getElementById('ab').value = '';
+    document.getElementById('fisico').value = '';
+    document.getElementById('fisico-pericia-chave').checked = false;
+    document.getElementById('atletismo').value = '';
+    document.getElementById('defesa').value = '';
+    document.getElementById('furtividade').value = '';
+    document.getElementById('manejar').value = '';
+    document.getElementById('pontaria').value = '';
+    document.getElementById('intelecto').value = '';
+    document.getElementById('intelecto-pericia-chave').checked = false;
+    document.getElementById('artimanha').value = '';
+    document.getElementById('conhecimento').value = '';
+    document.getElementById('oficio-intelecto').value = '';
+    document.getElementById('persuasao').value = '';
+    document.getElementById('poderArcano').value = '';
+    document.getElementById('consciencia').value = '';
+    document.getElementById('consciencia-pericia-chave').checked = false;
+    document.getElementById('empatia').value = '';
+    document.getElementById('enfermagem').value = '';
+    document.getElementById('percepcao').value = '';
+    document.getElementById('poderDivino').value = '';
+    document.getElementById('vontade').value = '';
+    document.getElementById('grau-mercenario').value = '';
+    document.querySelectorAll('#medalhas-positivas-container input').forEach(checkbox => checkbox.checked = false);
+    document.querySelectorAll('#medalhas-negativas-container input').forEach(checkbox => checkbox.checked = false);
+    document.getElementById('ranking-estrelas').value = '';
+    document.getElementById('ranking-missoes').value = '';
+    document.getElementById('ranking-valor').value = '';
+    document.getElementById('credito-mercenario').value = '';
+    document.getElementById('habilidade-regional').value = '';
+    document.getElementById('noroi').value = '';
+    document.getElementById('kiroi').value = '';
+    document.getElementById('recurso').value = '';
+
+    document.getElementById('oficio-container').innerHTML = '';
+    document.getElementById('opinioes-container').innerHTML = '';
+    document.getElementById('magias-container').innerHTML = '';
+    document.getElementById('item-container').innerHTML = '';
+    document.getElementById('habilidades-container').innerHTML = '';
+    document.getElementById('notes-container').innerHTML = '';
+
+    // Limpar os campos de conjuração
+    document.getElementById('magias-container').innerHTML = '';
+    document.getElementById('escala2-container').innerHTML = '';
+    document.getElementById('escala3-container').innerHTML = '';
+    document.getElementById('escala4-container').innerHTML = '';
+    document.getElementById('escala5-container').innerHTML = '';
+    document.getElementById('escala6-container').innerHTML = '';
+    document.getElementById('escala7-container').innerHTML = '';
+    document.getElementById('escala8-container').innerHTML = '';
+    document.getElementById('escala9-container').innerHTML = '';
+
+    // Restaurar cores padrão
+    const defaultBackgroundColor = '#1e1e1e';
+    const defaultTextColor = '#c7c7c7';
+    const defaultContainerColor = '#2e2e2e';
+
+    document.body.style.backgroundColor = defaultBackgroundColor;
+    document.body.style.color = defaultTextColor;
+    document.querySelector('.container').style.backgroundColor = defaultContainerColor;
+
+    document.getElementById('background-color').value = defaultBackgroundColor;
+    document.getElementById('text-color').value = defaultTextColor;
+    document.getElementById('container-color').value = defaultContainerColor;
+
+    // Remover entradas no localStorage
+    localStorage.removeItem('backgroundColor');
+    localStorage.removeItem('textColor');
+    localStorage.removeItem('containerColor');
+    localStorage.removeItem('personagemData');
+    saveToLocalStorage();
+}
+
+function alterarCor(elemento, cor) {
+    if (elemento === 'background') {
+        document.body.style.backgroundColor = cor;
+    } else if (elemento === 'color') {
+        document.body.style.color = cor;
+    } else if (elemento === 'container') {
+        document.querySelector('.container').style.backgroundColor = cor;
+    }
+    saveToLocalStorage(); // Salva as cores no local storage
+}
+
+
+        function loadColorsFromLocalStorage() {
+    const backgroundColor = localStorage.getItem('backgroundColor');
+    const textColor = localStorage.getItem('textColor');
+    const containerColor = localStorage.getItem('containerColor');
+    const textFont = localStorage.getItem('textFont');
+    const textSize = localStorage.getItem('textSize');
+    
+    if (backgroundColor) {
+        document.body.style.backgroundColor = backgroundColor;
+        document.getElementById('background-color').value = backgroundColor;
+    }
+    if (textColor) {
+        document.body.style.color = textColor;
+        document.getElementById('text-color').value = textColor;
+    }
+    if (containerColor) {
+        document.querySelector('.container').style.backgroundColor = containerColor;
+        document.getElementById('container-color').value = containerColor;
+    }
+    if (textFont) {
+        document.body.style.fontFamily = textFont;
+        document.getElementById('text-font').value = textFont;
+    }
+    if (textSize) {
+        document.body.style.fontSize = textSize + 'px';
+        document.getElementById('text-size').value = textSize;
+    }
+}
+
+        function saveToLocalStorage() {
+            localStorage.setItem('backgroundColor', document.getElementById('background-color').value);
+            localStorage.setItem('textColor', document.getElementById('text-color').value);
+            localStorage.setItem('containerColor', document.getElementById('container-color').value);
+            const data = {
+                nomePersonagem: document.getElementById('nome-personagem').value,
+                nivel: document.getElementById('nivel').value,
+                xp: Array.from(document.querySelectorAll('#xp-container input')).map(checkbox => checkbox.checked),
+                raca: document.getElementById('raca').value,
+                classeBase: document.getElementById('classeBase').value,
+                classeIntermediaria: document.getElementById('classeIntermediaria').value,
+                sobreclasse: document.getElementById('sobreclasse').value,
+                divindade: document.getElementById('divindade').value,
+                bondade: Array.from(document.querySelectorAll('#bondade-container input')).map(checkbox => checkbox.checked),
+                disciplina: Array.from(document.querySelectorAll('#disciplina-container input')).map(checkbox => checkbox.checked),
+                ousadia: Array.from(document.querySelectorAll('#ousadia-container input')).map(checkbox => checkbox.checked),
+                oficios: Array.from(document.getElementById('oficio-container').children).map(input => input.value),
+                noroi: document.getElementById('noroi').value,
+                kiroi: document.getElementById('kiroi').value,
+                recurso: document.getElementById('recurso').value,
+                opinioes: Array.from(document.getElementById('opinioes-container').children).map(input => input.value),
+                limiteAB: document.getElementById('limite-ab').value,
+                ab: document.getElementById('ab').value,
+                fisico: document.getElementById('fisico').value,
+                fisicoPericiaChave: document.getElementById('fisico-pericia-chave').checked,
+                atletismo: document.getElementById('atletismo').value,
+                defesa: document.getElementById('defesa').value,
+                furtividade: document.getElementById('furtividade').value,
+                manejar: document.getElementById('manejar').value,
+                pontaria: document.getElementById('pontaria').value,
+                intelecto: document.getElementById('intelecto').value,
+                intelectoPericiaChave: document.getElementById('intelecto-pericia-chave').checked,
+                artimanha: document.getElementById('artimanha').value,
+                conhecimento: document.getElementById('conhecimento').value,
+                oficioIntelecto: document.getElementById('oficio-intelecto').value,
+                persuasao: document.getElementById('persuasao').value,
+                poderArcano: document.getElementById('poderArcano').value,
+                consciencia: document.getElementById('consciencia').value,
+                conscienciaPericiaChave: document.getElementById('consciencia-pericia-chave').checked,
+                empatia: document.getElementById('empatia').value,
+                enfermagem: document.getElementById('enfermagem').value,
+                percepcao: document.getElementById('percepcao').value,
+                poderDivino: document.getElementById('poderDivino').value,
+                vontade: document.getElementById('vontade').value,
+                magias: Array.from(document.getElementById('magias-container').children).map(input => input.value),
+                habilidadeRegional: document.getElementById('habilidade-regional').value,
+                item: Array.from(document.getElementById('item-container').children).map(input => input.value),
+                habilidades: Array.from(document.getElementById('habilidades-container').children).map(input => input.value),
+                grauMercenario: document.getElementById('grau-mercenario').value,
+                medalhasPositivas: Array.from(document.querySelectorAll('#medalhas-positivas-container input')).map(checkbox => checkbox.checked),
+                medalhasNegativas: Array.from(document.querySelectorAll('#medalhas-negativas-container input')).map(checkbox => checkbox.checked),
+                rankingEstrelas: document.getElementById('ranking-estrelas').value,
+                rankingMissoes: document.getElementById('ranking-missoes').value,
+                rankingValor: document.getElementById('ranking-valor').value,
+                creditoMercenario: document.getElementById('credito-mercenario').value,
+                anotacoes: Array.from(document.getElementById('notes-container').children).map(textarea => textarea.value)
+            };
+
+            localStorage.setItem('personagemData', JSON.stringify(data));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadColorsFromLocalStorage();
+            marcarGradativo('xp-container');
+            marcarGradativo('bondade-container');
+            marcarGradativo('disciplina-container');
+            marcarGradativo('ousadia-container');
+            marcarGradativo('medalhas-positivas-container');
+            marcarGradativo('medalhas-negativas-container');
+            loadFromLocalStorage();
+        });
+
+        function setDefaultColorsIfNotSet() {
+    if (!localStorage.getItem('backgroundColor')) {
+        document.body.style.backgroundColor = '#1e1e1e';
+    }
+    if (!localStorage.getItem('textColor')) {
+        document.body.style.color = '#c7c7c7';
+    }
+    if (!localStorage.getItem('containerColor')) {
+        document.querySelector('.container').style.backgroundColor = '#2e2e2e';
+    }
+    if (!localStorage.getItem('textFont')) {
+        document.body.style.fontFamily = 'Arial';
+    }
+    if (!localStorage.getItem('textSize')) {
+        document.body.style.fontSize = '16px';
+    }
+}
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadColorsFromLocalStorage();
+            marcarGradativo('xp-container');
+            marcarGradativo('bondade-container');
+            marcarGradativo('disciplina-container');
+            marcarGradativo('ousadia-container');
+            marcarGradativo('medalhas-positivas-container');
+            marcarGradativo('medalhas-negativas-container');
+            loadFromLocalStorage();
+        });
+
+
+        window.onload = function() {
+            loadFromLocalStorage();
+        };
+
+        marcarGradativo('xp-container');
+        marcarGradativo('bondade-container');
+        marcarGradativo('disciplina-container');
+        marcarGradativo('ousadia-container');
+        marcarGradativo('medalhas-positivas-container');
+        marcarGradativo('medalhas-negativas-container');
+    </script>
+    <script>
+        // Função para exibir a janela de confirmação antes de recarregar ou fechar a página
+        window.addEventListener('beforeunload', function (e) {
+            var confirmationMessage = 'Você tem certeza que deseja sair? As alterações não salvas serão perdidas.';
+            e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+            return confirmationMessage; // Gecko, WebKit, Chrome <34
+        });
+    </script>
+</body>
+</html>
